@@ -12,23 +12,35 @@ import {
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as zod from 'zod';
-import { number, string } from "zod/lib";
+import { useState } from "react";
+import { number, string } from "zod";
 
-const newCycleValidations = zod.object({
+
+//Constante de configurações de validação
+const newCycleFormValidations = zod.object({
   task: string().min(1, 'Informe uma tarefa'),
   minutesAmount: number().min(5).max(60),
-})
+});
 
+type newCycleFormData = zod.infer<typeof newCycleFormValidations>
+
+//Componente Home
 export function Home() {
 
-  const { register, watch, handleSubmit } = useForm({
-    resolver: zodResolver(newCycleValidations),
+  const { register, watch, handleSubmit, reset } = useForm({
+    resolver: zodResolver(newCycleFormValidations),
+    defaultValues: {
+      task: '',
+      minutesAmount: 0
+    }
   });
 
   const isSubmitEmpty = watch('task');
 
-  const onHandleSubmit = (data: any) => {
-    console.log(data)
+  function onHandleSubmit(data: newCycleFormData) {
+    console.log(data);
+
+    reset();
   }
 
   return (
@@ -64,11 +76,11 @@ export function Home() {
           <span>0</span>
         </CountdownContainer>
 
-        <TimerButton disabled={!isSubmitEmpty}>
+        <TimerButton disabled={!isSubmitEmpty} type="submit">
           <Play size={24}/>
           Começar
         </TimerButton>
       </form>
     </MainContainer>
-  )
+  );
 }
