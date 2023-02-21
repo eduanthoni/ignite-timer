@@ -1,5 +1,4 @@
 import { createContext, ReactNode, useState } from "react"
-import uuid from "react-uuid";
 
 interface CycleData {
   id: string,
@@ -23,7 +22,8 @@ interface CycleContextData {
   handleSecondsPassed: (number: number) => void,
   createNewCycle: (data: formData) => void,
   stopCurrentCycle: () => void,
-  cycles: CycleData[]
+  cycles: CycleData[],
+  resetActiveCycleId: (data: string | null) => void
 }
 
 interface CycleContextProviderProps {
@@ -41,7 +41,7 @@ export function CycleContextProvider({ children }: CycleContextProviderProps) {
   const activeCycle = cycles.find(cycle => cycle.id === activeCycleId);
 
   function createNewCycle(data: formData) {
-    const id = uuid();
+    const id = String(new Date().getTime());
   
     const newCycle:CycleData = {
       id,
@@ -74,6 +74,7 @@ export function CycleContextProvider({ children }: CycleContextProviderProps) {
       state.map(cycle => {
         if(cycle.id === activeCycleId) {
           return {...cycle, completedDate: new Date()}
+
         } else {
           return cycle
         }
@@ -86,6 +87,10 @@ export function CycleContextProvider({ children }: CycleContextProviderProps) {
     setSecondsPassed(seconds);
   }
 
+  function resetActiveCycleId(id: string | null) {
+    setActiveCycleId(id);
+  }
+
   return (
     <CyclesContext.Provider value={
       { activeCycle, 
@@ -95,7 +100,8 @@ export function CycleContextProvider({ children }: CycleContextProviderProps) {
         handleSecondsPassed, 
         createNewCycle,
         stopCurrentCycle,
-        cycles
+        cycles,
+        resetActiveCycleId
       }
     }>
       { children }

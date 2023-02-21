@@ -1,6 +1,8 @@
 import { useContext } from "react";
 import { CyclesContext } from "../../context/CycleContext";
 import { HistoryContainer, HistoryList, Status } from "./styles";
+import { formatDistanceToNow } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
 
 export function History() {
   const { cycles } = useContext(CyclesContext);
@@ -20,38 +22,29 @@ export function History() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Tarefa</td>
-              <td>20 minutos</td>
-              <td>Há 1 dia</td>
+            { cycles.map(cycle => (
+              <tr key={cycle.id}>
+              <td>{cycle.task}</td>
+              <td>{cycle.minutesAmount} minutos</td>
+              <td>{formatDistanceToNow(cycle.startDate, {
+                addSuffix: true,
+                locale: ptBR,
+              })}</td>
               <td>
-                <Status statusColor="green">Concluído</Status>
+                { cycle.completedDate && 
+                  <Status statusColor="green"> Concluído </Status> 
+                }
+
+                { cycle.stopDate && 
+                  <Status statusColor="red"> Interrompido </Status> 
+                }
+
+                { (!cycle.stopDate && !cycle.completedDate) && 
+                  <Status statusColor="yellow"> Em andamento </Status> 
+                }
               </td>
             </tr>
-            <tr>
-              <td>Tarefa</td>
-              <td>20 minutos</td>
-              <td>Há 1 dia</td>
-              <td>
-                <Status statusColor="yellow">Concluído</Status>
-              </td>
-            </tr>
-            <tr>
-              <td>Tarefa</td>
-              <td>20 minutos</td>
-              <td>Há 1 dia</td>
-              <td>
-                <Status statusColor="red">Concluído</Status>
-              </td>
-            </tr>
-            <tr>
-              <td>Tarefa</td>
-              <td>20 minutos</td>
-              <td>Há 1 dia</td>
-              <td>
-                <Status statusColor="green">Concluído</Status>
-              </td>
-            </tr>
+            ))}
           </tbody>
         </table>
       </HistoryList>
