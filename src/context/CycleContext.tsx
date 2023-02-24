@@ -1,5 +1,11 @@
 import { createContext, ReactNode, useState, useReducer } from "react"
-import { CycleData, cyclesReducer } from "../reducers/CycleReducer"
+import { ActionTypes, 
+        addNewCycleAction, 
+        markFinishedCycleAction, 
+        resetActiveCycleAction, 
+        stopCurrentCycleAction 
+        } from "../reducers/cycle/actions"
+import { CycleData, cyclesReducer } from "../reducers/cycle/reducer"
 
 interface formData {
   task: string,
@@ -48,34 +54,19 @@ export function CycleContextProvider({ children }: CycleContextProviderProps) {
       startDate: new Date()
     }
   
-    dispatch({
-      type: 'ADD_NEW_CYCLE',
-      payload: {
-        newCycle
-      }
-    });
+    dispatch(addNewCycleAction(newCycle));
 
     setSecondsPassed(0);
   }
   
   function stopCurrentCycle() {
 
-    dispatch({
-      type: 'STOP_CURRENT_CYCLE',
-      payload: {
-        activeCycleId
-      }
-    })   
+    dispatch(stopCurrentCycleAction())   
   }
 
   function markCurrentAsFinished() {
 
-    dispatch({
-      type: 'MARK_FINISHED_CYCLE',
-      payload: {
-        activeCycleId
-      }
-    })
+    dispatch(markFinishedCycleAction())
   }
 
   function handleSecondsPassed(seconds: number) {
@@ -83,12 +74,7 @@ export function CycleContextProvider({ children }: CycleContextProviderProps) {
   }
 
   function resetActiveCycleId(id: string | null) {
-    dispatch({
-      type: 'RESET_ACTIVE_CYCLE',
-      payload: {
-        id
-      }
-    })
+    dispatch(resetActiveCycleAction(id))
   }
 
   return (

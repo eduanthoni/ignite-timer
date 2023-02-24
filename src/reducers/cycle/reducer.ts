@@ -1,3 +1,5 @@
+import { ActionTypes } from "./actions";
+
 export interface CycleData {
   id: string,
   task: string,
@@ -14,13 +16,13 @@ interface CycleState {
 
 export function cyclesReducer(state: CycleState, action: any) {
   switch(action.type) {
-    case 'ADD_NEW_CYCLE':
+    case ActionTypes.ADD_NEW_CYCLE:
       return {
         ...state,
         cycles: [...state.cycles, action.payload.newCycle],
         activeCycleId: action.payload.newCycle.id
       };
-    case 'STOP_CURRENT_CYCLE':
+    case ActionTypes.STOP_CURRENT_CYCLE:
       return {
         ...state,
         cycles: state.cycles.map(cycle => {
@@ -32,12 +34,12 @@ export function cyclesReducer(state: CycleState, action: any) {
         }),
         activeCycleId: null
       }
-    case 'RESET_ACTIVE_CYCLE':
+    case ActionTypes.RESET_ACTIVE_CYCLE:
       return {
         ...state,
         activeCycleId: action.payload.id
       }
-    case 'MARK_FINISHED_CYCLE':
+    case ActionTypes.MARK_FINISHED_CYCLE:
       return {
         ...state,
         cycles: state.cycles.map(cycle => {
